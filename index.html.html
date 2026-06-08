@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học Tiếng Trung 4.3 - Clear Hanzi & Examples</title>
+    <style>
+        :root {
+            --primary: #2c3e50; --secondary: #3498db; --success: #27ae60;
+            --danger: #e74c3c; --light: #f4f7f6; --dark: #2c3e50; --border: #dcdde1;
+        }
+
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--light); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .container { width: 95%; max-width: 850px; background: white; padding: 30px; margin: 20px 0; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); text-align: center; }
+        .hidden { display: none !important; }
+        
+        /* Stats */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-box { padding: 10px; border-radius: 12px; font-weight: bold; font-size: 0.9rem; }
+        
+        /* Learning Area */
+        .main-display { font-size: 5.5rem; font-weight: normal; color: var(--dark); margin-bottom: 30px; font-family: "PingFang SC", "Microsoft YaHei", "SimSun", serif; }
+        .progress-container { width: 100%; background: #eee; height: 6px; border-radius: 10px; margin-bottom: 20px; }
+        #progress-bar { width: 0%; height: 100%; background: var(--secondary); border-radius: 10px; transition: 0.4s; }
+
+        /* Đáp án hàng ngang */
+        .answer-container { margin-top: 25px; border: 1px solid var(--border); border-radius: 15px; overflow: hidden; background: #fafafa; }
+        .answer-row { display: flex; border-bottom: 1px solid var(--border); background: white; }
+        .ans-item { flex: 1; padding: 20px; position: relative; }
+        .ans-item:not(:last-child)::after { content: ""; position: absolute; right: 0; top: 20%; height: 60%; width: 1px; background: var(--border); }
+        .ans-label { font-size: 0.7rem; color: #999; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        
+        /* Chỉnh sửa font Hán tự đáp án theo yêu cầu */
+        .ans-value-hanzi { 
+            font-size: 4.5rem; /* To rõ ràng */
+            font-weight: 400;  /* Tránh bold */
+            color: #000; 
+            font-family: "STKaiti", "SimSun", "NSimSun", serif; /* Font chữ Hán mảnh, rõ nét */
+            line-height: 1.2;
+        }
+        .ans-value-text { font-weight: bold; font-size: 1.4rem; color: var(--primary); }
+
+        /* Vùng ví dụ */
+        .example-box { padding: 20px; background: #fdfdfd; text-align: left; border-top: 1px dashed var(--border); }
+        .example-title { font-size: 0.75rem; color: #3498db; font-weight: bold; margin-bottom: 10px; }
+        .example-content { font-size: 1.2rem; color: #444; line-height: 1.6; white-space: pre-wrap; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+
+        /* Buttons */
+        button { padding: 12px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-blue { background: var(--secondary); color: white; width: 100%; font-size: 1.1rem; }
+        .btn-recall { background: #e67e22; color: white; width: 100%; font-size: 1.1rem; }
+        .btn-green { background: var(--success); color: white; }
+        .btn-red { background: var(--danger); color: white; }
+        .btn-gray { background: #95a5a6; color: white; }
+        .btn-outline { background: white; border: 2px solid var(--border); color: #666; width: 100%; }
+
+        kbd { background: #eee; padding: 2px 6px; border-radius: 4px; border: 1px solid #ccc; font-family: monospace; font-size: 0.9rem; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 95%; max-width: 650px; }
+    </style>
+</head>
+<body>
+
+    <!-- MENU -->
+    <div class="container" id="menu-screen">
+        <h1 style="color: var(--primary); margin-bottom: 10px;">学习汉语 🚀</h1>
+        
+        <div class="stat-grid">
+            <div class="stat-box" style="background: #f1f2f6; color: #666;">TỔNG: <span id="stat-total">0</span></div>
+            <div class="stat-box" style="background: #e8f5e9; color: #2e7d32;">THUỘC: <span id="stat-learned">0</span></div>
+            <div class="stat-box" style="background: #ffebee; color: #c62828;">CHƯA: <span id="stat-unlearned">0</span></div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button class="btn-blue" onclick="startSession('new')">HỌC 10 TỪ MỚI</button>
+            <button class="btn-recall" onclick="startSession('recall')">RECALL (NGHE - VIẾT)</button>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button class="btn-outline" onclick="startSession('unlearned')">ÔN TỪ CHƯA THUỘC</button>
+                <button class="btn-outline" onclick="startSession('learned')">ÔN TỪ ĐÃ THUỘC</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                <button class="btn-gray" onclick="toggleModal('import-modal', true)">NHẬP DỮ LIỆU</button>
+                <button class="btn-gray" onclick="resetData()" style="opacity: 0.4;">RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH HỌC -->
+    <div class="container hidden" id="learn-screen">
+        <div class="progress-container"><div id="progress-bar"></div></div>
+        <div id="session-title" style="color: #95a5a6; font-size: 0.8rem; margin-bottom: 15px; font-weight: bold; text-transform: uppercase;">...</div>
+        
+        <div id="question-area">
+            <div id="display-text" class="main-display"></div>
+            <div id="recall-icon-area" class="hidden">
+                <div style="font-size: 80px; cursor: pointer; color: var(--secondary);" onclick="playVoiceFromBtn()">🔊</div>
+                <p style="color: #888;">Nghe và nhớ từ</p>
+            </div>
+        </div>
+        
+        <!-- Khối đáp án và ví dụ -->
+        <div id="answer-container" class="answer-container hidden">
+            <div class="answer-row">
+                <div class="ans-item">
+                    <div class="ans-label">Hán tự</div>
+                    <div id="ans-hanzi" class="ans-value-hanzi"></div>
+                </div>
+            </div>
+            <div class="answer-row">
+                <div class="ans-item">
+                    <div class="ans-label">Phiên âm</div>
+                    <div id="ans-pinyin" class="ans-value-text" style="color: var(--secondary);"></div>
+                </div>
+                <div class="ans-item">
+                    <div class="ans-label">Dịch nghĩa</div>
+                    <div id="ans-meaning" class="ans-value-text" style="color: var(--success);"></div>
+                </div>
+            </div>
+            <div class="example-box" id="example-area">
+                <div class="example-title">VÍ DỤ SỬ DỤNG:</div>
+                <div id="ans-example" class="example-content"></div>
+            </div>
+        </div>
+
+        <div id="instruction" style="margin-top: 25px; color: var(--secondary); font-weight: bold; height: 20px;"></div>
+
+        <div style="margin-top: 30px; color: #bdc3c7; font-size: 0.85rem;">
+            <kbd>Space</kbd> Hiện đáp án | <kbd>←</kbd> Chưa thuộc | <kbd>→</kbd> Đã thuộc
+        </div>
+        <button class="btn-gray" style="margin-top: 20px; opacity: 0.5;" onclick="goHome()">Thoát</button>
+    </div>
+
+    <!-- MÀN HÌNH KẾT THÚC -->
+    <div class="container hidden" id="end-screen">
+        <h2 style="font-size: 2rem;">Hoàn thành! 🎉</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <button class="btn-blue" id="btn-next-session">HỌC TIẾP 10 TỪ</button>
+            <button class="btn-green" onclick="retrySession()">HỌC LẠI 10 TỪ VỪA RỒI</button>
+            <button class="btn-gray" onclick="goHome()">VỀ MENU</button>
+        </div>
+    </div>
+
+    <!-- MODAL NHẬP -->
+    <div id="import-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Nhập dữ liệu Excel/Sheets</h3>
+            <p style="font-size: 0.8rem; color: #666; text-align: left;">
+                Định dạng 4 cột: <b>Hán tự | Phiên âm | Dịch nghĩa | Ví dụ</b><br>
+                (Nếu từ đã có, hệ thống sẽ tự cập nhật thông tin và ví dụ mới nhất).
+            </p>
+            <textarea id="import-area" style="width:100%; height:250px; margin: 10px 0; padding: 10px; border-radius: 10px; border: 1px solid #ddd;" placeholder="搬家	bān jiā	Chuyển nhà	我打算下个月搬家..."></textarea>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-gray" onclick="toggleModal('import-modal', false)" style="flex:1">HỦY</button>
+                <button class="btn-green" onclick="smartImport()" style="flex:2">LƯU & CẬP NHẬT</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let words = [];
+        let learnedList = [];
+        let currentSession = [];
+        let currentIndex = 0;
+        let isShowingAnswer = false;
+        let sessionType = '';
+
+        function init() {
+            words = JSON.parse(localStorage.getItem('cn_v4_words')) || [];
+            learnedList = JSON.parse(localStorage.getItem('cn_v4_learned')) || [];
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').innerText = words.length;
+            document.getElementById('stat-learned').innerText = learnedList.length;
+            document.getElementById('stat-unlearned').innerText = words.length - learnedList.length;
+        }
+
+        function toggleModal(id, show) { document.getElementById(id).classList.toggle('hidden', !show); }
+
+        // IMPORT THÔNG MINH (4 cột)
+        function smartImport() {
+            const text = document.getElementById('import-area').value.trim();
+            if (!text) return;
+
+            const lines = text.split('\n');
+            let added = 0, updated = 0;
+
+            lines.forEach(line => {
+                let parts = line.split('\t'); // Ưu tiên Tab từ Excel
+                if (parts.length < 2) parts = line.split(','); // Hỗ trợ CSV
+
+                // Loại bỏ STT ở đầu nếu có
+                if (!isNaN(parts[0].trim()) && parts.length > 2) parts.shift();
+
+                if (parts.length >= 2) {
+                    const hanzi = parts[0].trim();
+                    const pinyin = parts[1].trim();
+                    const meaning = parts[2] ? parts[2].trim() : '...';
+                    const example = parts[3] ? parts[3].trim() : 'Chưa có ví dụ.';
+
+                    const idx = words.findIndex(w => w.hanzi === hanzi);
+                    if (idx !== -1) {
+                        words[idx].pinyin = pinyin;
+                        words[idx].meaning = meaning;
+                        words[idx].example = example;
+                        updated++;
+                    } else {
+                        words.push({ id: 'w-'+Date.now()+Math.random(), hanzi, pinyin, meaning, example });
+                        added++;
+                    }
+                }
+            });
+
+            saveAll();
+            toggleModal('import-modal', false);
+            document.getElementById('import-area').value = '';
+            alert(`Thành công: Thêm ${added} từ mới, Cập nhật ${updated} từ cũ.`);
+        }
+
+        function saveAll() {
+            localStorage.setItem('cn_v4_words', JSON.stringify(words));
+            localStorage.setItem('cn_v4_learned', JSON.stringify(learnedList));
+            updateStats();
+        }
+
+        // SESSION LOGIC
+        function startSession(type) {
+            sessionType = type;
+            let pool = [];
+            if (type === 'new') pool = words.filter(w => !learnedList.includes(w.id));
+            else if (type === 'unlearned') pool = words.filter(w => !learnedList.includes(w.id));
+            else if (type === 'learned') pool = words.filter(w => learnedList.includes(w.id));
+            else if (type === 'recall') pool = words;
+
+            if (pool.length === 0) { alert("Danh sách trống!"); return; }
+
+            currentSession = pool.sort(() => 0.5 - Math.random()).slice(0, 10);
+            currentIndex = 0;
+            showScreen('learn-screen');
+            document.getElementById('session-title').innerText = type;
+            showWord();
+        }
+
+        function showWord() {
+            isShowingAnswer = false;
+            const word = currentSession[currentIndex];
+            const displayEl = document.getElementById('display-text');
+            const recallArea = document.getElementById('recall-icon-area');
+            
+            document.getElementById('progress-bar').style.width = ((currentIndex + 1) / currentSession.length * 100) + '%';
+            document.getElementById('answer-container').classList.add('hidden');
+            document.getElementById('instruction').innerText = "Ấn SPACE để xem đáp án";
+
+            if (sessionType === 'recall') {
+                displayEl.classList.add('hidden');
+                recallArea.classList.remove('hidden');
+                setTimeout(playVoiceFromBtn, 400);
+            } else {
+                displayEl.classList.remove('hidden');
+                recallArea.classList.add('hidden');
+                const modes = [word.hanzi, word.pinyin, word.meaning];
+                displayEl.innerText = modes[Math.floor(Math.random() * 3)];
+            }
+            
+            // Chuẩn bị sẵn đáp án
+            document.getElementById('ans-hanzi').innerText = word.hanzi;
+            document.getElementById('ans-pinyin').innerText = word.pinyin;
+            document.getElementById('ans-meaning').innerText = word.meaning;
+            document.getElementById('ans-example').innerText = word.example || "Chưa có ví dụ.";
+        }
+
+        function playVoiceFromBtn() { playVoice(currentSession[currentIndex].hanzi); }
+
+        function showAnswer() {
+            isShowingAnswer = true;
+            document.getElementById('answer-container').classList.remove('hidden');
+            document.getElementById('instruction').innerText = "← Chưa thuộc | Đã thuộc →";
+            if (sessionType !== 'recall') playVoiceFromBtn();
+        }
+
+        function nextWord(isSuccess) {
+            if (!isShowingAnswer) return;
+            const word = currentSession[currentIndex];
+            if (isSuccess) {
+                if (!learnedList.includes(word.id)) learnedList.push(word.id);
+            } else {
+                learnedList = learnedList.filter(id => id !== word.id);
+            }
+            localStorage.setItem('cn_learned_v4', JSON.stringify(learnedList));
+            currentIndex++;
+            if (currentIndex < currentSession.length) showWord();
+            else { updateStats(); showScreen('end-screen'); document.getElementById('btn-next-session').onclick = () => startSession(sessionType); }
+        }
+
+        function retrySession() { currentIndex = 0; showScreen('learn-screen'); showWord(); }
+
+        function playVoice(text) {
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'zh-CN'; msg.rate = 0.75;
+            window.speechSynthesis.speak(msg);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (document.getElementById('learn-screen').classList.contains('hidden')) return;
+            if (e.code === 'Space') { e.preventDefault(); if(!isShowingAnswer) showAnswer(); }
+            if (e.key === 'ArrowLeft') nextWord(false);
+            if (e.key === 'ArrowRight') nextWord(true);
+        });
+
+        function showScreen(id) { document.querySelectorAll('.container').forEach(c => c.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
+        function goHome() { showScreen('menu-screen'); updateStats(); }
+        function resetData() { if(confirm("Xóa sạch hết?")) { localStorage.clear(); location.reload(); } }
+
+        init();
+    </script>
+</body>
+</html>
