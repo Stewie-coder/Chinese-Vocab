@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Học Tiếng Trung 4.6 - Manual Master</title>
+    <title>Học Tiếng Trung 5.0 - Stable Version</title>
     <style>
         :root {
             --primary: #2c3e50; --secondary: #3498db; --success: #27ae60;
@@ -14,98 +14,74 @@
         .container { width: 95%; max-width: 850px; background: white; padding: 30px; margin: 20px 0; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); text-align: center; }
         .hidden { display: none !important; }
         
-        /* Stats */
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-box { padding: 12px; border-radius: 12px; font-weight: bold; font-size: 0.9rem; }
+        /* Chữ Hán câu hỏi - Rõ nét, To, Mỏng */
+        .main-display { font-size: 6.5rem; font-weight: 400; color: var(--dark); margin-bottom: 20px; font-family: "STKaiti", "SimSun", "NSimSun", serif; }
         
-        /* Display */
-        .main-display { font-size: 5.5rem; font-weight: normal; color: var(--dark); margin-bottom: 30px; font-family: "PingFang SC", "Microsoft YaHei", serif; }
         .progress-container { width: 100%; background: #eee; height: 8px; border-radius: 10px; margin-bottom: 20px; }
         #progress-bar { width: 0%; height: 100%; background: var(--secondary); border-radius: 10px; transition: 0.4s; }
 
-        /* Answer Styles */
+        /* Đáp án */
         .answer-container { margin-top: 25px; border: 1px solid var(--border); border-radius: 15px; overflow: hidden; background: #fafafa; }
         .answer-row { display: flex; border-bottom: 1px solid var(--border); background: white; }
         .ans-item { flex: 1; padding: 20px; position: relative; }
         .ans-item:not(:last-child)::after { content: ""; position: absolute; right: 0; top: 20%; height: 60%; width: 1px; background: var(--border); }
         .ans-label { font-size: 0.7rem; color: #999; text-transform: uppercase; margin-bottom: 8px; }
         
-        /* Hán tự to, rõ, không bold */
-        .ans-value-hanzi { 
-            font-size: 5rem; 
-            font-weight: 400; 
-            color: #000; 
-            font-family: "STKaiti", "SimSun", serif; 
-            line-height: 1.1;
-            margin: 10px 0;
-        }
-        .ans-value-text { font-weight: bold; font-size: 1.5rem; color: var(--primary); }
-
+        /* Hán tự đáp án */
+        .ans-value-hanzi { font-size: 5.5rem; font-weight: 400; color: #000; font-family: "STKaiti", "SimSun", serif; line-height: 1.1; }
+        .ans-value-text { font-weight: bold; font-size: 1.6rem; color: var(--primary); }
         .example-box { padding: 20px; background: #fdfdfd; text-align: left; border-top: 1px dashed var(--border); }
-        .example-title { font-size: 0.75rem; color: var(--secondary); font-weight: bold; margin-bottom: 5px; }
-        .example-content { font-size: 1.25rem; color: #444; line-height: 1.6; font-family: "PingFang SC", sans-serif; }
+        .example-content { font-size: 1.3rem; color: #444; line-height: 1.6; font-family: "PingFang SC", sans-serif; }
 
         /* Buttons */
         button { padding: 12px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .btn-blue { background: var(--secondary); color: white; width: 100%; font-size: 1.1rem; }
-        .btn-recall { background: #e67e22; color: white; width: 100%; font-size: 1.1rem; }
-        .btn-green { background: var(--success); color: white; }
+        .btn-ai { background: #10a37f; color: white; margin-top: 10px; width: 100%; }
         .btn-gray { background: #95a5a6; color: white; }
         .btn-outline { background: white; border: 2px solid var(--border); color: #666; width: 100%; }
 
-        /* Modals */
+        /* Modal xịn */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 95%; max-width: 800px; max-height: 85vh; overflow-y: auto; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 95%; max-width: 900px; max-height: 85vh; overflow-y: auto; position: relative; text-align: left; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
-        table th { background: #f8f9fa; position: sticky; top: -25px; padding: 10px; border-bottom: 2px solid #ddd; z-index: 10; }
-        table td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
+        table th { background: #f8f9fa; position: sticky; top: -25px; padding: 12px; border-bottom: 2px solid #ddd; z-index: 10; text-align: left; }
+        table td { padding: 12px; border-bottom: 1px solid #eee; }
         
-        kbd { background: #eee; padding: 2px 5px; border-radius: 4px; border: 1px solid #ccc; font-family: monospace; }
+        .ai-processing { background-color: #e8f5e9 !important; }
     </style>
 </head>
 <body>
 
-    <!-- MÀN HÌNH CHÍNH -->
     <div class="container" id="menu-screen">
-        <h1 style="color: var(--primary); margin-bottom: 10px;">学习汉语 🚀</h1>
+        <h1 style="color: var(--primary);">学习汉语 Pro 🚀</h1>
         
-        <div class="stat-grid">
-            <div class="stat-box" style="background: #f1f2f6; color: #666;">TỔNG: <span id="stat-total">0</span></div>
-            <div class="stat-box" style="background: #e8f5e9; color: #2e7d32;">THUỘC: <span id="stat-learned">0</span></div>
-            <div class="stat-box" style="background: #ffebee; color: #c62828;">CHƯA: <span id="stat-unlearned">0</span></div>
+        <div style="display: flex; justify-content: space-around; margin: 20px 0; background: #f8f9fa; padding: 15px; border-radius: 15px;">
+            <div>TỔNG: <b id="stat-total">0</b></div>
+            <div style="color: var(--success);">THUỘC: <b id="stat-learned">0</b></div>
+            <div style="color: var(--danger);">CHƯA: <b id="stat-unlearned">0</b></div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px;">
             <button class="btn-blue" onclick="startSession('new')">HỌC 10 TỪ MỚI</button>
-            <button class="btn-recall" onclick="startSession('recall')">RECALL (NGHE - VIẾT)</button>
-            
+            <button class="btn-blue" style="background: #e67e22;" onclick="startSession('recall')">RECALL (NGHE - VIẾT)</button>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <button class="btn-outline" onclick="startSession('unlearned')">ÔN TỪ CHƯA THUỘC</button>
                 <button class="btn-outline" onclick="startSession('learned')">ÔN TỪ ĐÃ THUỘC</button>
             </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-                <button class="btn-gray" onclick="toggleModal('import-modal', true)">📥 NHẬP TỪ EXCEL</button>
-                <button class="btn-gray" onclick="showWordManager()">📋 QUẢN LÝ TỪ VỰNG</button>
-            </div>
-            
-            <button onclick="resetData()" style="margin-top: 30px; border:none; background:none; color:red; cursor:pointer; opacity:0.3;">Reset dữ liệu</button>
+            <button class="btn-gray" style="margin-top: 10px;" onclick="openImport()">📥 DÁN HÁN TỰ (EXCEL)</button>
+            <button class="btn-gray" onclick="openManager()">📋 QUẢN LÝ & AI AUTO-FILL</button>
         </div>
+        <button onclick="resetData()" style="margin-top: 30px; background:none; border:none; color:#ccc; cursor:pointer;">Xóa toàn bộ dữ liệu</button>
     </div>
 
     <!-- MÀN HÌNH HỌC -->
     <div class="container hidden" id="learn-screen">
         <div class="progress-container"><div id="progress-bar"></div></div>
-        <div id="session-title" style="color: #95a5a6; font-size: 0.8rem; margin-bottom: 15px; font-weight: bold; text-transform: uppercase;">...</div>
+        <div id="session-title" style="color: #95a5a6; font-size: 0.8rem; margin-bottom: 15px; font-weight: bold; text-align: center;">...</div>
         
-        <div id="question-area">
-            <div id="display-text" class="main-display"></div>
-            <div id="recall-icon-area" class="hidden">
-                <div style="font-size: 80px; cursor: pointer; color: var(--secondary);" onclick="playVoiceFromBtn()">🔊</div>
-                <p style="color: #888;">Nghe và nhớ từ</p>
-            </div>
-        </div>
+        <div id="display-text" class="main-display"></div>
+        <div id="recall-icon-area" class="hidden"><div style="font-size: 80px; cursor: pointer; color: var(--secondary);" onclick="playVoiceFromBtn()">🔊</div></div>
         
         <div id="answer-container" class="answer-container hidden">
             <div class="answer-row">
@@ -115,26 +91,21 @@
                 <div class="ans-item"><div class="ans-label">Phiên âm</div><div id="ans-pinyin" class="ans-value-text" style="color: var(--secondary);"></div></div>
                 <div class="ans-item"><div class="ans-label">Dịch nghĩa</div><div id="ans-meaning" class="ans-value-text" style="color: var(--success);"></div></div>
             </div>
-            <div class="example-box" id="example-area">
-                <div class="example-title">VÍ DỤ:</div>
-                <div id="ans-example" class="example-content"></div>
-            </div>
+            <div class="example-box"><div id="ans-example" class="example-content"></div></div>
         </div>
 
-        <div id="instruction" style="margin-top: 25px; color: var(--secondary); font-weight: bold; height: 20px;"></div>
-        <div style="margin-top: 30px; color: #bdc3c7; font-size: 0.85rem;"><kbd>Space</kbd> Hiện đáp án | <kbd>←</kbd> Sai | <kbd>→</kbd> Đúng</div>
-        <button class="btn-gray" style="margin-top: 20px; opacity: 0.5;" onclick="goHome()">Thoát</button>
+        <div style="margin-top: 30px; color: #bdc3c7; font-weight: bold;">[Space] Đáp án | [←] Sai | [→] Đúng</div>
+        <button class="btn-gray" style="margin-top: 20px;" onclick="goHome()">Thoát</button>
     </div>
 
-    <!-- MODAL NHẬP DỮ LIỆU -->
+    <!-- MODAL NHẬP -->
     <div id="import-modal" class="modal hidden">
         <div class="modal-content">
-            <h3>Dán dữ liệu từ Excel / Sheets</h3>
-            <p style="font-size: 0.8rem; color: #666; text-align: left;">Cấu trúc: Hán tự [Tab] Phiên âm [Tab] Nghĩa [Tab] Ví dụ</p>
-            <textarea id="import-area" style="width:100%; height:250px; margin: 10px 0; padding: 10px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box;" placeholder="搬家	bān jiā	Chuyển nhà	我打算下个月搬家..."></textarea>
+            <h3>Dán Hán tự từ Excel</h3>
+            <textarea id="import-area" style="width:100%; height:250px; margin: 10px 0; padding: 10px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box;" placeholder="Dán cột Hán tự vào đây..."></textarea>
             <div style="display: flex; gap: 10px;">
-                <button class="btn-gray" onclick="toggleModal('import-modal', false)" style="flex:1">HỦY</button>
-                <button class="btn-green" onclick="smartImport()" style="flex:2">LƯU & CẬP NHẬT</button>
+                <button class="btn-gray" onclick="closeModal('import-modal')" style="flex:1">HỦY</button>
+                <button class="btn-green" onclick="processImport()" style="flex:2">LƯU DANH SÁCH</button>
             </div>
         </div>
     </div>
@@ -142,14 +113,22 @@
     <!-- MODAL QUẢN LÝ -->
     <div id="list-modal" class="modal hidden">
         <div class="modal-content">
-            <h3 style="margin-top:0">Danh sách từ vựng đã nạp</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Quản lý từ vựng</h3>
+                <button onclick="closeModal('list-modal')" style="background:none; font-size: 25px; color:#999;">&times;</button>
+            </div>
+            
+            <div style="background: #eef2f7; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <input type="password" id="ai-key" placeholder="Dán Gemini API Key vào đây..." style="width:100%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc; box-sizing:border-box;">
+                <button class="btn-ai" onclick="autoFillWithAI()" id="ai-btn">🤖 AI AUTO-FILL (PINYIN + DỊCH + VÍ DỤ)</button>
+            </div>
+
             <div style="overflow-x:auto;">
                 <table id="manager-table">
-                    <thead><tr><th>Hán tự</th><th>Phiên âm</th><th>Dịch</th><th>Ví dụ</th><th>Xóa</th></tr></thead>
+                    <thead><tr><th>Hán tự</th><th>Phiên âm</th><th>Nghĩa</th><th>Ví dụ</th><th>Xóa</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
-            <button class="btn-gray" style="width:100%; margin-top:15px;" onclick="toggleModal('list-modal', false)">ĐÓNG</button>
         </div>
     </div>
 
@@ -164,6 +143,13 @@
         function init() {
             words = JSON.parse(localStorage.getItem('cn_v4_words')) || [];
             learnedList = JSON.parse(localStorage.getItem('cn_v4_learned')) || [];
+            document.getElementById('ai-key').value = localStorage.getItem('gemini_api_key') || '';
+            updateStats();
+        }
+
+        function saveAll() {
+            localStorage.setItem('cn_v4_words', JSON.stringify(words));
+            localStorage.setItem('cn_v4_learned', JSON.stringify(learnedList));
             updateStats();
         }
 
@@ -173,68 +159,106 @@
             document.getElementById('stat-unlearned').innerText = words.length - learnedList.length;
         }
 
-        function toggleModal(id, show) { document.getElementById(id).classList.toggle('hidden', !show); }
-
-        function smartImport() {
-            const text = document.getElementById('import-area').value.trim();
-            if (!text) return;
-            const lines = text.split('\n');
-            let added = 0, updated = 0;
-            lines.forEach(line => {
-                let parts = line.split('\t');
-                if (parts.length < 2) parts = line.split(',');
-                if (!isNaN(parts[0].trim()) && parts.length > 2) parts.shift();
-                if (parts.length >= 2) {
-                    const hanzi = parts[0].trim();
-                    const pinyin = parts[1].trim();
-                    const meaning = parts[2] ? parts[2].trim() : '...';
-                    const example = parts[3] ? parts[3].trim() : '...';
-                    const idx = words.findIndex(w => w.hanzi === hanzi);
-                    if (idx !== -1) {
-                        words[idx].pinyin = pinyin; words[idx].meaning = meaning; words[idx].example = example;
-                        updated++;
-                    } else {
-                        words.push({ id: 'w-'+Date.now()+Math.random(), hanzi, pinyin, meaning, example });
-                        added++;
-                    }
-                }
-            });
-            saveAll(); toggleModal('import-modal', false); document.getElementById('import-area').value = '';
-            alert(`Xong! Thêm ${added} từ và cập nhật ${updated} từ trùng.`);
+        // --- Modal Control ---
+        function openImport() { document.getElementById('import-modal').classList.remove('hidden'); }
+        function openManager() { 
+            document.getElementById('list-modal').classList.remove('hidden'); 
+            renderTable(); 
         }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        function showWordManager() {
+        // --- Table Rendering ---
+        function renderTable(highlightId = null) {
             const tbody = document.querySelector('#manager-table tbody');
             tbody.innerHTML = '';
             words.forEach(w => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${w.hanzi}</td><td>${w.pinyin}</td><td>${w.meaning}</td><td style="font-size:0.7rem">${w.example}</td><td><button onclick="deleteWord('${w.id}')" style="color:red;">&times;</button></td>`;
+                if (w.id === highlightId) tr.className = 'ai-processing';
+                
+                tr.innerHTML = `
+                    <td style="font-size:1.5rem; font-family:'STKaiti', serif;">${w.hanzi}</td>
+                    <td>${w.pinyin || '...'}</td>
+                    <td>${w.meaning || '...'}</td>
+                    <td style="font-size:0.75rem">${w.example || '...'}</td>
+                    <td><button onclick="deleteWord('${w.id}')" style="color:red; background:none;">&times;</button></td>
+                `;
                 tbody.appendChild(tr);
             });
-            toggleModal('list-modal', true);
         }
 
         function deleteWord(id) {
             if(confirm("Xóa từ này?")) {
                 words = words.filter(w => w.id !== id);
                 learnedList = learnedList.filter(lid => lid !== id);
-                saveAll(); showWordManager();
+                saveAll(); renderTable();
             }
         }
 
-        function saveAll() { localStorage.setItem('cn_v4_words', JSON.stringify(words)); localStorage.setItem('cn_v4_learned', JSON.stringify(learnedList)); updateStats(); }
+        // --- AI Logic ---
+        async function autoFillWithAI() {
+            const apiKey = document.getElementById('ai-key').value.trim();
+            if (!apiKey) return alert("Vui lòng nhập API Key!");
+            localStorage.setItem('gemini_api_key', apiKey);
 
+            const targets = words.filter(w => !w.pinyin || w.pinyin === '...' || !w.meaning || w.meaning === '...');
+            if (targets.length === 0) return alert("Dữ liệu đã đầy đủ!");
+
+            const btn = document.getElementById('ai-btn');
+            btn.disabled = true;
+
+            for (let i = 0; i < targets.length; i++) {
+                const word = targets[i];
+                btn.innerText = `⏳ ĐANG XỬ LÝ: ${word.hanzi}...`;
+                
+                try {
+                    const prompt = `Translate Chinese word "${word.hanzi}". Return ONLY one line in format: Pinyin | Vietnamese meaning | Example sentence (pinyin) - Vietnamese translation. No bold, no extra words.`;
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    });
+                    const data = await res.json();
+                    const text = data.candidates[0].content.parts[0].text.trim();
+                    const info = text.split('|').map(s => s.trim());
+                    
+                    if (info.length >= 2) {
+                        const idx = words.findIndex(w => w.id === word.id);
+                        words[idx].pinyin = info[0];
+                        words[idx].meaning = info[1];
+                        words[idx].example = info[2] || '...';
+                        saveAll();
+                        renderTable(word.id);
+                    }
+                } catch (e) { console.error(e); }
+                await new Promise(r => setTimeout(r, 600));
+            }
+            btn.disabled = false;
+            btn.innerText = "🤖 AI AUTO-FILL (PINYIN + DỊCH + VÍ DỤ)";
+            alert("Đã xong!");
+        }
+
+        // --- Import ---
+        function processImport() {
+            const val = document.getElementById('import-area').value.trim();
+            if(!val) return;
+            val.split('\n').forEach(line => {
+                const hanzi = line.split('\t')[0].trim();
+                if(!hanzi) return;
+                if(!words.some(w => w.hanzi === hanzi)) {
+                    words.push({ id: 'w-'+Date.now()+Math.random(), hanzi, pinyin: '...', meaning: '...', example: '...' });
+                }
+            });
+            saveAll(); closeModal('import-modal'); document.getElementById('import-area').value = '';
+        }
+
+        // --- Học ---
         function startSession(type) {
             sessionType = type;
-            let pool = [];
-            if (type === 'new' || type === 'unlearned') pool = words.filter(w => !learnedList.includes(w.id));
-            else if (type === 'learned') pool = words.filter(w => learnedList.includes(w.id));
-            else if (type === 'recall') pool = words;
-
+            let pool = (type === 'learned') ? words.filter(w => learnedList.includes(w.id)) : words.filter(w => !learnedList.includes(w.id));
+            if (type === 'recall') pool = words;
             if (pool.length === 0) return alert("Danh sách trống!");
             currentSession = pool.sort(() => 0.5 - Math.random()).slice(0, 10);
-            currentIndex = 0;
-            showScreen('learn-screen');
+            currentIndex = 0; showScreen('learn-screen');
             document.getElementById('session-title').innerText = type.toUpperCase();
             showWord();
         }
@@ -244,8 +268,7 @@
             const word = currentSession[currentIndex];
             document.getElementById('progress-bar').style.width = ((currentIndex + 1) / currentSession.length * 100) + '%';
             document.getElementById('answer-container').classList.add('hidden');
-            document.getElementById('instruction').innerText = "Ấn SPACE để xem đáp án";
-
+            
             if (sessionType === 'recall') {
                 document.getElementById('display-text').classList.add('hidden');
                 document.getElementById('recall-icon-area').classList.remove('hidden');
@@ -265,7 +288,6 @@
         function showAnswer() {
             isShowingAnswer = true;
             document.getElementById('answer-container').classList.remove('hidden');
-            document.getElementById('instruction').innerText = "← Chưa thuộc | Đã thuộc →";
             if (sessionType !== 'recall') playVoice(currentSession[currentIndex].hanzi);
         }
 
@@ -274,8 +296,7 @@
             const word = currentSession[currentIndex];
             if (isSuccess) { if (!learnedList.includes(word.id)) learnedList.push(word.id); }
             else { learnedList = learnedList.filter(id => id !== word.id); }
-            saveAll();
-            currentIndex++;
+            saveAll(); currentIndex++;
             if (currentIndex < currentSession.length) showWord();
             else { alert("Xong hiệp học!"); goHome(); }
         }
